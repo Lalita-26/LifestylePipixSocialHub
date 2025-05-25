@@ -31,6 +31,7 @@ const mockUsers = [
 
 const Navbar = () => {
   const [isChatDropdownOpen, setChatDropdownOpen] = useState(false);
+  const [isNotiDropdownOpen, setNotiDropdownOpen] = useState(false);
   const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const profileRef = useRef(null);
@@ -44,6 +45,7 @@ const Navbar = () => {
         profileRef.current &&
         !profileRef.current.contains(event.target)
       ) {
+        setNotiDropdownOpen(false);
         setChatDropdownOpen(false);
         setProfileDropdownOpen(false);
       }
@@ -88,7 +90,13 @@ const Navbar = () => {
           <Search size={22} />
         </button>
 
-        <button className="text-pink-400 hover:text-pink-600">
+        <button
+          onClick={() => {
+            setNotiDropdownOpen(!isNotiDropdownOpen);
+            setProfileDropdownOpen(false);
+          }}
+          className="text-pink-400 hover:text-pink-600"
+        >
           <Bell size={20} />
         </button>
 
@@ -103,6 +111,62 @@ const Navbar = () => {
           >
             <MessageSquare size={20} />
           </button>
+
+          {isNotiDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg p-3 z-20">
+              <p className="text-pink-500 font-semibold text-sm px-2 pb-2">
+                Notification
+              </p>
+              {[
+                {
+                  id: 1,
+                  name: "Minnie Park",
+                  profile: "https://i.pinimg.com/736x/f2/01/05/f20105b53bb69e61990ff9037daa8a9f.jpg",
+                  type: "like",
+                  content: "liked your photo",
+                  time: "2 mins ago",
+                },
+                {
+                  id: 2,
+                  name: "John Smith",
+                  profile: "https://i.pinimg.com/736x/84/58/4c/84584caccdedcdb00ec7f3b1bb11e2a6.jpg",
+                  type: "comment",
+                  content: "commented: Nice view!",
+                  time: "10 mins ago",
+                },
+                {
+                  id: 3,
+                  name: "Alice Wu",
+                  profile: "https://i.pinimg.com/736x/0f/95/b6/0f95b64a8f7000d31a8951d9519d630b.jpg",
+                  type: "follow",
+                  content: "started following you",
+                  time: "1 hour ago",
+                },
+              ].map((noti) => (
+                <div
+                  key={noti.id}
+                  className="flex items-start gap-3 px-2 py-2 hover:bg-pink-50 cursor-pointer rounded-md"
+                >
+                  <img
+                    src={noti.profile}
+                    className="w-10 h-10 rounded-full object-cover"
+                    alt={noti.name}
+                  />
+                  <div className="flex flex-col text-sm text-gray-700">
+                    <span className="font-semibold">{noti.name}</span>
+                    <span>
+                      {noti.content.length > 50
+                        ? noti.content.substring(0, 50) + "..."
+                        : noti.content}
+                    </span>
+                    <span className="text-xs text-gray-400 mt-1">
+                      {noti.time}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
           {isChatDropdownOpen && (
             <div className="absolute right-0 mt-2 w-60 bg-white rounded-lg shadow-lg p-2 z-20">
